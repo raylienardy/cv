@@ -179,9 +179,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const generatingText = currentLang === 'id' ? '<span>Membuat...</span>' : '<span>Generating...</span>';
     downloadBtn.innerHTML = generatingText;
     downloadBtn.disabled = true;
+    const element = document.querySelector('.cv-container');
     try {
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
-      const element = document.querySelector('.cv-container');
       const imgs = element.querySelectorAll('img');
       await Promise.all(Array.from(imgs).map(img => {
         if (img.style.display === 'none') return Promise.resolve();
@@ -191,24 +191,27 @@ document.addEventListener('DOMContentLoaded', function() {
           img.addEventListener('error', resolve, { once: true });
         });
       }));
+      element.classList.add('pdf-export');
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       const opt = {
-        margin: 0.32,
+        margin: 0.28,
         filename: filename,
         image: { type: 'jpeg', quality: 0.92 },
         html2canvas: { scale: 1.5, useCORS: false, backgroundColor: '#ffffff', logging: false, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { mode: [] }
       };
       await html2pdf().from(element).set(opt).save();
     } catch (err) {
       console.error('PDF generation error:', err);
       const fileProtocol = window.location.protocol === 'file:';
-      const msg = fileProtocol 
+      const msg = fileProtocol
         ? (currentLang === 'id' ? 'PDF tidak bisa dibuat dari file lokal. Harap gunakan HTTP server: python -m http.server 8000, lalu buka http://localhost:8000' : 'PDF cannot be generated from local file. Please use HTTP server: python -m http.server 8000, then open http://localhost:8000')
         : (currentLang === 'id' ? 'Gagal membuat PDF. Silakan coba lagi.' : 'Failed to generate PDF. Please try again.');
       alert(msg);
       if (!fileProtocol) console.error('PDF error details:', err);
     } finally {
+      element.classList.remove('pdf-export');
       downloadBtn.innerHTML = originalContent;
       downloadBtn.disabled = false;
     }
