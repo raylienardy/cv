@@ -25,9 +25,13 @@ https://raylienardy.github.io/cv/
 
 ## How to Use
 
-1. Open `index.html` in a browser
-2. Use the EN/ID switcher in the bottom-right corner to change language
-3. Click the PDF button to download CV with automatic filename
+1. Run a local HTTP server (required for PDF export due to browser security restrictions on `file://`):
+   ```bash
+   python -m http.server 8000
+   ```
+   Then open `http://localhost:8000` in your browser.
+2. Use the EN/ID switcher in the bottom-right corner to change language.
+3. Click the PDF button to download CV with automatic filename.
 
 ## Edit Content
 

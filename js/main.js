@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
       'ach2': '<strong>3rd Winner</strong> — Web Design Competition, Electro Invention Race (2022)',
       'download-title': 'Download CV as PDF',
       'photo-fallback': 'Photo',
-      'photo-alt': 'Profile photo of Raynato Lienardy'
+      'photo-alt': 'Profile photo of Raynato Lienardy',
+      'pdf-file-protocol-msg': 'PDF cannot be generated from local file. Please use HTTP server: python -m http.server 8000, then open http://localhost:8000'
     },
     id: {
       'title': 'Raynato Lienardy — CV (Indonesia)',
@@ -91,7 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
       'ach2': '<strong>Juara 3</strong> — Web Design Competition, Electro Invention Race (2022)',
       'download-title': 'Unduh CV sebagai PDF',
       'photo-fallback': 'Foto',
-      'photo-alt': 'Foto profil Raynato Lienardy'
+      'photo-alt': 'Foto profil Raynato Lienardy',
+      'pdf-file-protocol-msg': 'PDF tidak bisa dibuat dari file lokal. Harap gunakan HTTP server: python -m http.server 8000, lalu buka http://localhost:8000'
     }
   };
 
@@ -164,33 +166,52 @@ document.addEventListener('DOMContentLoaded', function() {
   const savedLang = localStorage.getItem('cv-lang');
   setLanguage(savedLang === 'id' ? 'id' : 'en');
 
-  downloadBtn.addEventListener('click', function() {
+  downloadBtn.addEventListener('click', async function() {
+    if (typeof html2pdf === 'undefined') {
+      const msg = document.documentElement.lang === 'id' ? 'Library PDF belum dimuat. Periksa koneksi internet dan refresh halaman.' : 'PDF library not loaded. Check internet connection and refresh.';
+      alert(msg);
+      console.error('html2pdf is not defined — CDN failed to load');
+      return;
+    }
     const currentLang = document.documentElement.lang;
     const filename = currentLang === 'id' ? 'Raynato_Lienardy_CV_ID.pdf' : 'Raynato_Lienardy_CV.pdf';
-    
     const originalContent = downloadBtn.innerHTML;
     const generatingText = currentLang === 'id' ? '<span>Membuat...</span>' : '<span>Generating...</span>';
     downloadBtn.innerHTML = generatingText;
     downloadBtn.disabled = true;
-
-    const element = document.querySelector('.cv-container');
-    const opt = {
-      margin: 0.3,
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.92 },
-      html2canvas: { scale: 1.5, useCORS: false },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().from(element).set(opt).save().then(() => {
-      downloadBtn.innerHTML = originalContent;
-      downloadBtn.disabled = false;
-    }).catch(err => {
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const element = document.querySelector('.cv-container');
+      const imgs = element.querySelectorAll('img');
+      await Promise.all(Array.from(imgs).map(img => {
+        if (img.style.display === 'none') return Promise.resolve();
+        if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+        return new Promise(resolve => {
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+        });
+      }));
+      const opt = {
+        margin: 0.32,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.92 },
+        html2canvas: { scale: 1.5, useCORS: false, backgroundColor: '#ffffff', logging: false, scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+      await html2pdf().from(element).set(opt).save();
+    } catch (err) {
       console.error('PDF generation error:', err);
-      alert(currentLang === 'id' ? 'Gagal membuat PDF. Silakan coba lagi.' : 'Failed to generate PDF. Please try again.');
+      const fileProtocol = window.location.protocol === 'file:';
+      const msg = fileProtocol 
+        ? (currentLang === 'id' ? 'PDF tidak bisa dibuat dari file lokal. Harap gunakan HTTP server: python -m http.server 8000, lalu buka http://localhost:8000' : 'PDF cannot be generated from local file. Please use HTTP server: python -m http.server 8000, then open http://localhost:8000')
+        : (currentLang === 'id' ? 'Gagal membuat PDF. Silakan coba lagi.' : 'Failed to generate PDF. Please try again.');
+      alert(msg);
+      if (!fileProtocol) console.error('PDF error details:', err);
+    } finally {
       downloadBtn.innerHTML = originalContent;
       downloadBtn.disabled = false;
-    });
+    }
   });
 });
 
