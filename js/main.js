@@ -44,7 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
       'lang-text': '<strong>Indonesian:</strong> Native | <strong>English:</strong> Intermediate / Professional Working Proficiency | <strong>Japanese:</strong> Beginner',
       'ach1': '<strong>3rd Winner</strong> — Web Design Competition, Electro Invention Race (2023)',
       'ach2': '<strong>3rd Winner</strong> — Web Design Competition, Electro Invention Race (2022)',
-      'download-title': 'Download CV as PDF'
+      'download-title': 'Download CV as PDF',
+      'photo-fallback': 'Photo',
+      'photo-alt': 'Profile photo of Raynato Lienardy'
     },
     id: {
       'title': 'Raynato Lienardy — CV (Indonesia)',
@@ -87,7 +89,9 @@ document.addEventListener('DOMContentLoaded', function() {
       'lang-text': '<strong>Bahasa Indonesia:</strong> Native | <strong>Bahasa Inggris:</strong> Intermediate / Professional Working Proficiency | <strong>Bahasa Jepang:</strong> Beginner',
       'ach1': '<strong>Juara 3</strong> — Web Design Competition, Electro Invention Race (2023)',
       'ach2': '<strong>Juara 3</strong> — Web Design Competition, Electro Invention Race (2022)',
-      'download-title': 'Unduh CV sebagai PDF'
+      'download-title': 'Unduh CV sebagai PDF',
+      'photo-fallback': 'Foto',
+      'photo-alt': 'Foto profil Raynato Lienardy'
     }
   };
 

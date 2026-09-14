@@ -56,9 +56,28 @@
     <div class="cv-container">
       <!-- HEADER -->
       <header class="cv-header">
-        <div class="header-main">
-          <h1 class="name">Raynato Lienardy</h1>
-          <p class="title">Full-Stack Web & Mobile Developer</p>
+        <div class="header-left">
+          <div class="profile-photo-container">
+            <img
+              src="./assets/images/profile.png"
+              alt="Profile photo of Raynato Lienardy"
+              class="profile-photo"
+              id="profilePhoto"
+              data-i18n-alt="photo-alt"
+              onerror="this.style.display = 'none'"
+            />
+            <div
+              class="profile-photo-fallback"
+              id="photoFallback"
+              data-i18n="photo-fallback"
+            >
+              Photo
+            </div>
+          </div>
+          <div class="header-main">
+            <h1 class="name">Raynato Lienardy</h1>
+            <p class="title">Full-Stack Web & Mobile Developer</p>
+          </div>
         </div>
         <div class="header-contact">
           <p>Makassar, Indonesia | 085875656106</p>

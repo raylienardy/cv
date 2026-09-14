@@ -59,6 +59,49 @@ a:hover {
   gap: 16px;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-photo-container {
+  width: 78px;
+  aspect-ratio: 3 / 4;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: #eef2f7;
+  position: relative;
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-photo-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-subtle);
+  background: #eef2f7;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  z-index: 0;
+}
+
 .name {
   font-size: 24px;
   font-weight: 700;
@@ -255,6 +298,14 @@ a:hover {
   .cv-header {
     flex-direction: column;
     gap: 8px;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .profile-photo-container {
+    width: 66px;
   }
 
   .header-contact {
